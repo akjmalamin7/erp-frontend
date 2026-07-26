@@ -1,41 +1,23 @@
-import { useState, type FormEvent } from "react";
+import { useState, type ReactNode } from "react";
 import { Plus } from "lucide-react";
-import toast from "react-hot-toast";
-import {
-  useGetAllCategoriesQuery,
-  useCreateCategoryMutation,
-  useGetAllBrandsQuery,
-  useCreateBrandMutation,
-} from "@/services/inventoryApi";
-import PageHeader from "@/components/PageHeader";
-import Loader from "@/components/Loader";
-import { EmptyState } from "@/components/States";
-import Modal from "@/components/Modal";
+import { useGetAllCategoriesQuery } from "@/entities/category";
+import { useGetAllBrandsQuery } from "@/entities/brand";
+import { PageHeader, Loader, EmptyState, Modal } from "@/shared/ui";
+import CategoryForm from "@/features/category-create/ui/CategoryForm";
+import BrandForm from "@/features/brand-create/ui/BrandForm";
 
 function SimpleEntityPanel({
   title,
   items,
   isLoading,
-  onCreate,
-  creating,
+  renderForm,
 }: {
   title: string;
   items: { _id: string; name: string; description?: string }[];
   isLoading: boolean;
-  onCreate: (name: string, description: string) => Promise<void>;
-  creating: boolean;
+  renderForm: (close: () => void) => ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    await onCreate(name, description);
-    setName("");
-    setDescription("");
-    setOpen(false);
-  };
 
   return (
     <div className="card p-5">
@@ -64,29 +46,7 @@ function SimpleEntityPanel({
       )}
 
       <Modal open={open} onClose={() => setOpen(false)} title={`New ${title.slice(0, -1)}`}>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="label">Name</label>
-            <input required className="input" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div>
-            <label className="label">Description (optional)</label>
-            <textarea
-              className="input"
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button type="button" className="btn-outline" onClick={() => setOpen(false)}>
-              Cancel
-            </button>
-            <button type="submit" disabled={creating} className="btn-accent">
-              Save
-            </button>
-          </div>
-        </form>
+        {renderForm(() => setOpen(false))}
       </Modal>
     </div>
   );
@@ -95,8 +55,6 @@ function SimpleEntityPanel({
 export default function CategoriesBrandsPage() {
   const { data: categoriesData, isLoading: loadingCategories } = useGetAllCategoriesQuery();
   const { data: brandsData, isLoading: loadingBrands } = useGetAllBrandsQuery();
-  const [createCategory, { isLoading: creatingCategory }] = useCreateCategoryMutation();
-  const [createBrand, { isLoading: creatingBrand }] = useCreateBrandMutation();
 
   return (
     <div>
@@ -106,29 +64,13 @@ export default function CategoriesBrandsPage() {
           title="Categories"
           items={categoriesData?.data ?? []}
           isLoading={loadingCategories}
-          creating={creatingCategory}
-          onCreate={async (name, description) => {
-            try {
-              await createCategory({ name, description: description || undefined }).unwrap();
-              toast.success("Category added");
-            } catch {
-              toast.error("Couldn't add category");
-            }
-          }}
+          renderForm={(close) => <CategoryForm onDone={close} onCancel={close} />}
         />
         <SimpleEntityPanel
           title="Brands"
           items={brandsData?.data ?? []}
           isLoading={loadingBrands}
-          creating={creatingBrand}
-          onCreate={async (name, description) => {
-            try {
-              await createBrand({ name, description: description || undefined }).unwrap();
-              toast.success("Brand added");
-            } catch {
-              toast.error("Couldn't add brand");
-            }
-          }}
+          renderForm={(close) => <BrandForm onDone={close} onCancel={close} />}
         />
       </div>
     </div>

@@ -1,9 +1,7 @@
-import { useGetDashboardQuery } from "@/services/dashboardApi";
-import { useGetSalaryReportQuery } from "@/services/accountsApi";
-import PageHeader from "@/components/PageHeader";
-import Loader from "@/components/Loader";
-import { ErrorState, EmptyState } from "@/components/States";
-import SalesPieChart from "@/components/charts/SalesPieChart";
+import { useGetDashboardQuery } from "@/entities/dashboard";
+import { useGetSalaryReportQuery } from "@/entities/account";
+import { PageHeader, Loader, ErrorState, EmptyState } from "@/shared/ui";
+import SalesPieChart from "@/widgets/sales-pie-chart/ui/SalesPieChart";
 
 export default function ReportsPage() {
   const { data: dashboard, isLoading, isError } = useGetDashboardQuery();

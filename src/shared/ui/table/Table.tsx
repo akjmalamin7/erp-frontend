@@ -1,15 +1,12 @@
 import { ReactNode } from "react";
 
-// T হলো একটি জেনেরিক টাইপ যা ডেটার শেপ ডিফাইন করবে
 export interface Column<T> {
   header: string | ReactNode;
-  accessor?: keyof T; // ডেটার কি (key)
+  accessor?: keyof T;
   width?: string | number;
   className?: string;
   headerClassName?: string;
-  // কাস্টম রেন্ডারিং এর জন্য
   render?: (value: any, row: T, index: number) => ReactNode;
-  // Rowspan এবং Colspan এর জন্য ফাংশন
   colSpan?: (row: T, index: number) => number;
   rowSpan?: (row: T, index: number) => number;
 }
@@ -52,11 +49,16 @@ const Table = <T extends { _id?: string | number; id?: string | number }>({
                 className={onRowClick ? "cursor-pointer hover:bg-slate-50" : ""}
               >
                 {columns.map((col, colIndex) => {
-                  const cellValue = col.accessor ? row[col.accessor] : undefined;
+                  const cellValue = col.accessor
+                    ? row[col.accessor]
+                    : undefined;
 
-                  // Colspan & Rowspan logic
-                  const cSpan = col.colSpan ? col.colSpan(row, rowIndex) : undefined;
-                  const rSpan = col.rowSpan ? col.rowSpan(row, rowIndex) : undefined;
+                  const cSpan = col.colSpan
+                    ? col.colSpan(row, rowIndex)
+                    : undefined;
+                  const rSpan = col.rowSpan
+                    ? col.rowSpan(row, rowIndex)
+                    : undefined;
 
                   return (
                     <td
@@ -67,7 +69,7 @@ const Table = <T extends { _id?: string | number; id?: string | number }>({
                     >
                       {col.render
                         ? col.render(cellValue, row, rowIndex)
-                        : (cellValue as ReactNode) ?? "—"}
+                        : ((cellValue as ReactNode) ?? "—")}
                     </td>
                   );
                 })}
@@ -75,7 +77,10 @@ const Table = <T extends { _id?: string | number; id?: string | number }>({
             ))
           ) : (
             <tr>
-              <td colSpan={columns.length} className="text-center py-10 text-slate-400">
+              <td
+                colSpan={columns.length}
+                className="text-center py-10 text-slate-400"
+              >
                 No data available
               </td>
             </tr>

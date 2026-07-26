@@ -1,10 +1,8 @@
 import toast from "react-hot-toast";
 import { CheckCheck } from "lucide-react";
-import { useGetLowStockQuery, useUpdateLowStockMutation } from "@/services/inventoryApi";
-import type { Product } from "@/types";
-import PageHeader from "@/components/PageHeader";
-import Loader from "@/components/Loader";
-import { EmptyState, ErrorState } from "@/components/States";
+import { useGetLowStockQuery, useUpdateLowStockMutation } from "@/entities/low-stock";
+import type { Product } from "@/entities/product";
+import { PageHeader, Loader, EmptyState, ErrorState } from "@/shared/ui";
 
 export default function LowStockPage() {
   const { data, isLoading, isError } = useGetLowStockQuery();

@@ -1,32 +1,16 @@
-import { profileUpdated } from "@/app/authSlice";
+import { profileUpdated } from "@/entities/session";
 import { useAppDispatch } from "@/app/hooks";
-import Loader from "@/components/Loader";
-import PageHeader from "@/components/PageHeader";
-import { useUpdatePasswordMutation } from "@/services/authApi";
-import { useGetProfileQuery } from "@/services/usersApi";
-import { useState, type FormEvent } from "react";
-import toast from "react-hot-toast";
+import { Loader, PageHeader } from "@/shared/ui";
+import { useGetProfileQuery } from "@/entities/user";
+import PasswordUpdateForm from "@/features/password-update/ui/PasswordUpdateForm";
 
 export default function ProfilePage() {
   const { data, isLoading } = useGetProfileQuery();
-  const [updatePassword, { isLoading: changing }] = useUpdatePasswordMutation();
   const dispatch = useAppDispatch();
-  const [pwForm, setPwForm] = useState({ old_password: "", new_password: "" });
 
   const user = data?.data;
 
   if (isLoading) return <Loader />;
-
-  const handleChangePassword = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      await updatePassword(pwForm).unwrap();
-      toast.success("Password updated");
-      setPwForm({ old_password: "", new_password: "" });
-    } catch {
-      toast.error("Couldn't update password");
-    }
-  };
 
   return (
     <div>
@@ -63,30 +47,7 @@ export default function ProfilePage() {
           )}
         </div>
 
-        <form onSubmit={handleChangePassword} className="card space-y-4 p-5">
-          <h3 className="text-sm font-bold text-ink-900">Change password</h3>
-          <div>
-            <label className="label">Current password</label>
-            <input
-              required
-              type="password"
-              className="input"
-              value={pwForm.old_password}
-              onChange={(e) => setPwForm({ ...pwForm, old_password: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="label">New password</label>
-            <input
-              required
-              type="password"
-              className="input"
-              value={pwForm.new_password}
-              onChange={(e) => setPwForm({ ...pwForm, new_password: e.target.value })}
-            />
-          </div>
-          <button type="submit" disabled={changing} className="btn-accent w-full">Update password</button>
-        </form>
+        <PasswordUpdateForm />
       </div>
     </div>
   );

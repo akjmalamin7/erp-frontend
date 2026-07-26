@@ -1,6 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-ink-950: #0b1220;
+  --color-ink-900: #0f172a;
+  --color-ink-800: #151f32;
+  --color-ink-700: #1e293b;
+  --color-ink-600: #334155;
+
+  --color-brass-50: #fdf6e9;
+  --color-brass-100: #faebc8;
+  --color-brass-300: #eec776;
+  --color-brass-400: #e3ae45;
+  --color-brass-500: #d69a2d;
+  --color-brass-600: #b37e1f;
+  --color-brass-700: #8c6218;
+
+  --color-sea-400: #3fc1b0;
+  --color-sea-500: #22a699;
+  --color-sea-600: #178a7f;
+
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --shadow-panel:
+    0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px -12px rgba(15, 23, 42, 0.18);
+}
 
 @layer base {
   html {
@@ -9,7 +34,10 @@
   body {
     @apply bg-slate-50 text-ink-900 font-body;
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-display text-ink-900;
   }
   ::selection {
@@ -17,12 +45,13 @@
   }
 }
 
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none;
+}
+
 @layer components {
   .card {
     @apply bg-white rounded-2xl border border-slate-200/70 shadow-panel;
-  }
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-primary {
     @apply btn bg-ink-900 text-white hover:bg-ink-800;
@@ -38,6 +67,9 @@
   }
   .btn-danger {
     @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+  .btn-close {
+    @apply lg:cursor-pointer rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-ink-700;
   }
   .input {
     @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink-900 placeholder:text-slate-400 focus:border-ink-900 focus:outline-none focus:ring-2 focus:ring-ink-900/10;

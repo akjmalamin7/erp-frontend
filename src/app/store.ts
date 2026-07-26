@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { api } from "@/services/api";
-import authReducer from "@/app/authSlice";
+import { api } from "@/shared/api/base";
+import { authReducer } from "@/entities/session";
 import uiReducer from "@/app/uiSlice";
 
 export const store = configureStore({

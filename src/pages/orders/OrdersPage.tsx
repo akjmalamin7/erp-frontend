@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Ban, Wallet2, Eye } from "lucide-react";
 import toast from "react-hot-toast";
-import { useGetAllOrdersQuery, useCancelOrderMutation, useReceiveOrderPaymentMutation } from "@/services/ordersApi";
-import type { Order, Customer } from "@/types";
-import PageHeader from "@/components/PageHeader";
-import Loader from "@/components/Loader";
-import { EmptyState, ErrorState } from "@/components/States";
-import Modal from "@/components/Modal";
+import { useGetAllOrdersQuery, useCancelOrderMutation } from "@/entities/order";
+import type { Order } from "@/entities/order";
+import type { Customer } from "@/entities/customer";
+import { PageHeader, Loader, EmptyState, ErrorState, Modal } from "@/shared/ui";
+import ReceivePaymentForm from "@/features/order-receive-payment/ui/ReceivePaymentForm";
 
 const statusBadge: Record<Order["status"], string> = {
   pending: "bg-brass-100 text-brass-700",
@@ -23,9 +22,7 @@ const paymentBadge: Record<Order["payment_status"], string> = {
 export default function OrdersPage() {
   const { data, isLoading, isError } = useGetAllOrdersQuery();
   const [cancelOrder] = useCancelOrderMutation();
-  const [receivePayment, { isLoading: paying }] = useReceiveOrderPaymentMutation();
   const [payFor, setPayFor] = useState<Order | null>(null);
-  const [amount, setAmount] = useState("");
 
   const orders = data?.data ?? [];
 
@@ -35,18 +32,6 @@ export default function OrdersPage() {
       toast.success("Order canceled");
     } catch {
       toast.error("Couldn't cancel order");
-    }
-  };
-
-  const handlePayment = async () => {
-    if (!payFor) return;
-    try {
-      await receivePayment({ order_id: payFor._id, amount: Number(amount) }).unwrap();
-      toast.success("Payment recorded");
-      setPayFor(null);
-      setAmount("");
-    } catch {
-      toast.error("Couldn't record payment");
     }
   };
 
@@ -122,25 +107,13 @@ export default function OrdersPage() {
       )}
 
       <Modal open={!!payFor} onClose={() => setPayFor(null)} title="Receive payment">
-        <div className="space-y-4">
-          <p className="text-sm text-slate-500">
-            Order total <strong className="font-mono">৳ {payFor?.total_amount?.toLocaleString()}</strong>, already
-            paid <strong className="font-mono">৳ {payFor?.paid_amount?.toLocaleString()}</strong>.
-          </p>
-          <div>
-            <label className="label">Amount received</label>
-            <input
-              type="number"
-              className="input"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button className="btn-outline" onClick={() => setPayFor(null)}>Cancel</button>
-            <button className="btn-accent" disabled={paying} onClick={handlePayment}>Record payment</button>
-          </div>
-        </div>
+        {payFor && (
+          <ReceivePaymentForm
+            order={payFor}
+            onDone={() => setPayFor(null)}
+            onCancel={() => setPayFor(null)}
+          />
+        )}
       </Modal>
     </div>
   );

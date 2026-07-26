@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { useGetInvoiceQuery } from "@/services/ordersApi";
-import type { Customer, OrderItem, Product } from "@/types";
-import PageHeader from "@/components/PageHeader";
-import Loader from "@/components/Loader";
-import { EmptyState, ErrorState } from "@/components/States";
+import { useGetInvoiceQuery } from "@/entities/order";
+import type { OrderItem } from "@/entities/order";
+import type { Customer } from "@/entities/customer";
+import type { Product } from "@/entities/product";
+import { PageHeader, Loader, EmptyState, ErrorState } from "@/shared/ui";
 
 export default function InvoicesPage() {
   const [orderId, setOrderId] = useState("");

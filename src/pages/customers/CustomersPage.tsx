@@ -1,37 +1,20 @@
-import Loader from "@/components/Loader";
-import Modal from "@/components/Modal";
-import PageHeader from "@/components/PageHeader";
-import { EmptyState, ErrorState } from "@/components/States";
-import { useCreateCustomerMutation, useGetAllCustomersQuery } from "@/services/customersApi";
+import { Loader, Modal, PageHeader, EmptyState, ErrorState } from "@/shared/ui";
+import { useGetAllCustomersQuery } from "@/entities/customer";
+import type { Customer } from "@/entities/customer";
 import { Plus, Search } from "lucide-react";
-import { useState, type FormEvent } from "react";
-import toast from "react-hot-toast";
-// DynamicTable ইমপোর্ট করুন
+import { useState } from "react";
 import Table, { Column } from "@/shared/ui/table/Table";
-
-// কাস্টমার টাইপ ডিফাইন (যদি types ফাইল থেকে না আসে)
-interface Customer {
-  _id: string;
-  name: string;
-  phone: string;
-  email?: string;
-  due_balance?: number;
-  address?: string;
-}
+import CreateCustomerForm from "@/features/customer-create/ui/CreateCustomerForm";
 
 export default function CustomersPage() {
   const { data, isLoading, isError } = useGetAllCustomersQuery();
-  const [createCustomer, { isLoading: creating }] = useCreateCustomerMutation();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", address: "" });
 
-  // কাস্টমার ডেটা ফিল্টারিং
   const customers = (data?.data ?? []).filter((c: Customer) =>
     `${c.name} ${c.phone}`.toLowerCase().includes(query.toLowerCase()),
   );
 
-  // টেবিল কলাম কনফিগারেশন
   const columns: Column<Customer>[] = [
     {
       header: "Name",
@@ -62,18 +45,6 @@ export default function CustomersPage() {
       ),
     },
   ];
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      await createCustomer(form).unwrap();
-      toast.success("Customer added");
-      setForm({ name: "", phone: "", email: "", address: "" });
-      setOpen(false);
-    } catch {
-      toast.error("Couldn't add customer");
-    }
-  };
 
   return (
     <div>
@@ -107,60 +78,11 @@ export default function CustomersPage() {
           description="Add your first customer to start recording sales against them."
         />
       ) : (
-        /* DynamicTable এর ব্যবহার */
-        <Table
-          columns={columns}
-          data={customers}
-        />
+        <Table columns={columns} data={customers} />
       )}
 
       <Modal open={open} onClose={() => setOpen(false)} title="New customer">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="label">Full name</label>
-            <input
-              required
-              className="input"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="label">Phone</label>
-            <input
-              required
-              className="input"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="label">Email (optional)</label>
-            <input
-              type="email"
-              className="input"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="label">Address (optional)</label>
-            <textarea
-              className="input"
-              rows={2}
-              value={form.address}
-              onChange={(e) => setForm({ ...form, address: e.target.value })}
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button type="button" className="btn-outline" onClick={() => setOpen(false)}>
-              Cancel
-            </button>
-            <button type="submit" disabled={creating} className="btn-accent">
-              Save customer
-            </button>
-          </div>
-        </form>
+        <CreateCustomerForm onDone={() => setOpen(false)} onCancel={() => setOpen(false)} />
       </Modal>
     </div>
   );
