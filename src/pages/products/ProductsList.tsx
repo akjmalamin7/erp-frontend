@@ -1,7 +1,7 @@
 import type { Product } from "@/entities/product";
 import { useGetAllProductsQuery } from "@/entities/product";
 import ProductForm from "@/features/product-create/ui/ProductForm";
-import { EmptyState, ErrorState, Loader, Modal, PageHeader } from "@/shared/ui";
+import { EmptyState, ErrorState, Loader, PageHeader } from "@/shared/ui";
 import Table, { Column } from "@/shared/ui/table/Table";
 import { Pencil, Plus, Search } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -126,17 +126,12 @@ export default function ProductsList() {
         <Table columns={columns} data={filtered} />
       )}
 
-      <Modal
+      <ProductForm
         open={open}
-        onClose={() => setOpen(false)}
-        title={editing ? "Edit product" : "New product"}
-      >
-        <ProductForm
-          editing={editing}
-          onDone={() => setOpen(false)}
-          onCancel={() => setOpen(false)}
-        />
-      </Modal>
+        editing={editing}
+        onDone={() => setOpen(false)}
+        onCancel={() => setOpen(false)}
+      />
     </div>
   );
 }

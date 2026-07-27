@@ -13,10 +13,12 @@ import { useAppSelector } from "@/app/hooks";
 import { ImageUploader } from "@/features/image-uploader";
 import RevenueAreaChart from "@/widgets/revenue-chart/ui/RevenueAreaChart";
 import SalesPieChart from "@/widgets/sales-pie-chart/ui/SalesPieChart";
+import { useState } from "react";
 
 const currency = (n: number) => `৳ ${n.toLocaleString()}`;
 
 export default function Dashboard() {
+  const [url, setUrl] = useState("");
   const user = useAppSelector((s) => s.auth.user);
   const greetingName = user?.email?.split("@")[0] ?? "there";
   const { data, isLoading, isError } = useGetDashboardQuery();
@@ -92,7 +94,10 @@ export default function Dashboard() {
           </span>
         </div>
       )}
-      <ImageUploader onSelect={(value) => console.log(value)} />
+      <div>
+        <img src={url ?? ""} width={80} height={80} />
+      </div>
+      <ImageUploader onSelect={(value) => setUrl(value)} />
 
       <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-5">
         <div className="card p-5 xl:col-span-3">
