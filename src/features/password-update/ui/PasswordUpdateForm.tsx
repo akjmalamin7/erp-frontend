@@ -1,25 +1,27 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import toast from "react-hot-toast";
 import { useUpdatePasswordMutation } from "@/features/password-update/api/passwordUpdateApi";
 import {
   passwordUpdateSchema,
   type PasswordUpdateFormValues,
 } from "@/features/password-update/model/schema";
+import Button from "@/shared/ui/button/Button";
+import ControllPassword from "@/shared/ui/password/ui/ControllPassword";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export default function PasswordUpdateForm() {
   const [updatePassword, { isLoading: changing }] = useUpdatePasswordMutation();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<PasswordUpdateFormValues>({
+  const form = useForm<PasswordUpdateFormValues>({
     resolver: yupResolver(passwordUpdateSchema),
     defaultValues: { old_password: "", new_password: "" },
   });
-
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = form;
   const onSubmit = async (values: PasswordUpdateFormValues) => {
     try {
       await updatePassword(values).unwrap();
@@ -31,19 +33,31 @@ export default function PasswordUpdateForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="card space-y-4 p-5" noValidate>
-      <h3 className="text-sm font-bold text-ink-900">Change password</h3>
-      <div>
-        <label className="label">Current password</label>
-        <input type="password" className="input" {...register("old_password")} />
-        {errors.old_password && <p className="mt-1 text-xs text-red-600">{errors.old_password.message}</p>}
-      </div>
-      <div>
-        <label className="label">New password</label>
-        <input type="password" className="input" {...register("new_password")} />
-        {errors.new_password && <p className="mt-1 text-xs text-red-600">{errors.new_password.message}</p>}
-      </div>
-      <button type="submit" disabled={changing} className="btn-accent w-full">Update password</button>
-    </form>
+    <div className="card space-y-4 p-5">
+      <FormProvider {...form}>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-sm font-bold text-ink-900">Change password</h3>
+
+          <ControllPassword
+            label="Current Password"
+            name="old_password"
+            control={control}
+          />
+          <ControllPassword
+            label="New Password"
+            name="new_password"
+            control={control}
+          />
+        </div>
+      </FormProvider>
+      <Button
+        onClick={handleSubmit(onSubmit)}
+        disabled={changing || !isDirty}
+        variant="accent"
+        className="w-full"
+      >
+        {changing ? "Updating..." : " Update password"}
+      </Button>
+    </div>
   );
 }

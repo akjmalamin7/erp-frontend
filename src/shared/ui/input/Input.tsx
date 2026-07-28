@@ -7,6 +7,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   type?:
     | "text"
     | "email"
+    | "date"
     | "password"
     | "number"
     | "file"

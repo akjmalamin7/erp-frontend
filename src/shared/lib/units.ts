@@ -1,0 +1,131 @@
+export const productUnits: string[] = [
+  "pcs",
+  "piece",
+  "unit",
+  "kg",
+  "g",
+  "mg",
+  "ton",
+  "lb",
+  "oz",
+  "ltr",
+  "ml",
+  "cc",
+  "m",
+  "cm",
+  "mm",
+  "km",
+  "ft",
+  "inch",
+  "sqm",
+  "sqft",
+  "cft",
+  "box",
+  "pack",
+  "packet",
+  "carton",
+  "dozen",
+  "pair",
+  "set",
+  "bundle",
+  "roll",
+  "bottle",
+  "jar",
+  "can",
+  "bag",
+  "sack",
+  "tray",
+  "tube",
+  "sheet",
+  "strip",
+  "ream",
+  "book",
+  "capsule",
+  "tablet",
+  "vial",
+];
+
+export const productUnitsOptions = [
+  { name: "PCS", value: "pcs" },
+  { name: "Piece", value: "piece" },
+  { name: "Unit", value: "unit" },
+
+  // Weight
+  { name: "Kg", value: "kg" },
+  { name: "Gram", value: "gram" },
+  { name: "Mg", value: "mg" },
+  { name: "Ton", value: "ton" },
+  { name: "Lb", value: "lb" },
+  { name: "Oz", value: "oz" },
+
+  // Volume
+  { name: "Liter", value: "liter" },
+  { name: "Milliliter", value: "ml" },
+  { name: "CC", value: "cc" },
+  { name: "Gallon", value: "gallon" },
+
+  // Length
+  { name: "Millimeter", value: "mm" },
+  { name: "Centimeter", value: "cm" },
+  { name: "Meter", value: "meter" },
+  { name: "Kilometer", value: "km" },
+  { name: "Inch", value: "inch" },
+  { name: "Foot", value: "ft" },
+  { name: "Yard", value: "yard" },
+
+  // Area / Volume
+  { name: "Square Meter", value: "sqm" },
+  { name: "Square Foot", value: "sqft" },
+  { name: "Cubic Foot", value: "cft" },
+  { name: "Cubic Meter", value: "cbm" },
+
+  // Packaging
+  { name: "Pack", value: "pack" },
+  { name: "Packet", value: "packet" },
+  { name: "Box", value: "box" },
+  { name: "Carton", value: "carton" },
+  { name: "Case", value: "case" },
+  { name: "Bundle", value: "bundle" },
+  { name: "Roll", value: "roll" },
+  { name: "Ream", value: "ream" },
+  { name: "Sheet", value: "sheet" },
+  { name: "Strip", value: "strip" },
+  { name: "Tube", value: "tube" },
+  { name: "Tray", value: "tray" },
+  { name: "Pallet", value: "pallet" },
+  { name: "Container", value: "container" },
+
+  // Containers
+  { name: "Bottle", value: "bottle" },
+  { name: "Jar", value: "jar" },
+  { name: "Can", value: "can" },
+  { name: "Bag", value: "bag" },
+  { name: "Sack", value: "sack" },
+  { name: "Bucket", value: "bucket" },
+  { name: "Drum", value: "drum" },
+
+  // Count
+  { name: "Pair", value: "pair" },
+  { name: "Set", value: "set" },
+  { name: "Dozen", value: "dozen" },
+  { name: "Score", value: "score" },
+  { name: "Gross", value: "gross" },
+
+  // Medical
+  { name: "Tablet", value: "tablet" },
+  { name: "Capsule", value: "capsule" },
+  { name: "Vial", value: "vial" },
+  { name: "Ampoule", value: "ampoule" },
+
+  // Documents
+  { name: "Book", value: "book" },
+  { name: "Copy", value: "copy" },
+
+  // Seafood / Agriculture
+  { name: "Fish", value: "fish" },
+  { name: "Crab", value: "crab" },
+  { name: "Shrimp", value: "shrimp" },
+  { name: "Head", value: "head" },
+  { name: "Bunch", value: "bunch" },
+  { name: "Cluster", value: "cluster" },
+];

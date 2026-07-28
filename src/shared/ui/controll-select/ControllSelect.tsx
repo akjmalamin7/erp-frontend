@@ -30,17 +30,19 @@ const ControllSelect = <TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <Select
-          {...field}
-          label={label}
-          options={options}
-          placeholder={placeholder}
-          disabled={disabled}
-          error={{
-            status: !!fieldState.error,
-            message: fieldState.error?.message as string,
-          }}
-        />
+        <div className="w-full">
+          <Select
+            {...field}
+            label={label}
+            options={options}
+            placeholder={placeholder}
+            disabled={disabled}
+            error={{
+              status: !!fieldState.error,
+              message: fieldState.error?.message as string,
+            }}
+          />
+        </div>
       )}
     />
   );

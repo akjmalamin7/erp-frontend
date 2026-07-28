@@ -1,0 +1,55 @@
+import { Eye, EyeOff } from "lucide-react";
+import React, { ReactNode, useState } from "react";
+
+interface PasswordProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string | ReactNode;
+  error?: { status: boolean; message: string };
+}
+
+const Password = React.forwardRef<HTMLInputElement, PasswordProps>(
+  ({ name, label, placeholder, error, className, ...props }, ref) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePassword = () => {
+      setShowPassword((prev) => !prev);
+    };
+
+    return (
+      <div className="w-full">
+        {label && <label className="label block mb-1">{label}</label>}
+
+        <div className="relative">
+          <input
+            {...props}
+            ref={ref}
+            name={name}
+            type={showPassword ? "text" : "password"}
+            placeholder={placeholder}
+            className={`input pr-10 ${className}`} // ডানপাশে আইকনের জন্য জায়গা রাখা হয়েছে
+          />
+
+          <button
+            type="button"
+            onClick={togglePassword}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+            tabIndex={-1} // ট্যাব দিয়ে আইকনে ফোকাস হওয়া বন্ধ করবে
+          >
+            {showPassword ? (
+              <EyeOff size={18} strokeWidth={2} />
+            ) : (
+              <Eye size={18} strokeWidth={2} />
+            )}
+          </button>
+        </div>
+
+        {error?.status && (
+          <p className="text-xs text-red-600 mt-1">{error.message}</p>
+        )}
+      </div>
+    );
+  },
+);
+
+Password.displayName = "Password";
+
+export default Password;

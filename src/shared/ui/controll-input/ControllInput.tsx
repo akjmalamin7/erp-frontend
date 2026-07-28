@@ -13,6 +13,7 @@ interface IProps<TFieldValues extends FieldValues> {
   type?:
     | "text"
     | "email"
+    | "date"
     | "password"
     | "number"
     | "file"
@@ -35,7 +36,7 @@ const ControllInput = <TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <>
+        <div className="w-full">
           <Input
             {...field}
             type={type}
@@ -48,7 +49,7 @@ const ControllInput = <TFieldValues extends FieldValues>({
             placeholder={placeholder}
             className={className}
           />
-        </>
+        </div>
       )}
     />
   );

@@ -26,17 +26,19 @@ const ControllRadio = <TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <RadioGroup
-          {...field}
-          label={label}
-          options={options}
-          disabled={disabled}
-          error={{
-            status: !!fieldState.error,
-            message: fieldState.error?.message,
-          }}
-          onChange={(val) => field.onChange(val)}
-        />
+        <div>
+          <RadioGroup
+            {...field}
+            label={label}
+            options={options}
+            disabled={disabled}
+            error={{
+              status: !!fieldState.error,
+              message: fieldState.error?.message,
+            }}
+            onChange={(val) => field.onChange(val)}
+          />
+        </div>
       )}
     />
   );

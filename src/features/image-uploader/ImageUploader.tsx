@@ -127,33 +127,37 @@ const ImageUploader = ({ onSelect }: Props) => {
   };
 
   const footer = (
-    <div className="flex w-full justify-end gap-2">
-      <Button
-        size="md"
-        variant="danger"
-        disabled={(!file && !selectedImage) || isDeleting}
-        onClick={() => {
-          if (file) {
-            setFile(null);
-          } else {
-            handleDeleteUploadedImage();
-          }
-        }}
-      >
-        <Trash2 size={16} />
-        {isDeleting ? "Deleting..." : "Delete"}
-      </Button>
+    <div className="flex w-full justify-between gap-2">
+      <div>
+        <Button
+          size="md"
+          variant="danger"
+          disabled={(!file && !selectedImage) || isDeleting}
+          onClick={() => {
+            if (file) {
+              setFile(null);
+            } else {
+              handleDeleteUploadedImage();
+            }
+          }}
+        >
+          <Trash2 size={16} />
+          {isDeleting ? "Deleting..." : "Delete"}
+        </Button>
+      </div>
 
-      <Button
-        size="md"
-        disabled={!file && !selectedImage}
-        onClick={handleSelect}
-      >
-        Select
-      </Button>
-      <Button size="md" disabled={!file || isLoading} onClick={handleUpload}>
-        {isLoading ? "Uploading..." : "Upload"}
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          size="md"
+          disabled={!file && !selectedImage}
+          onClick={handleSelect}
+        >
+          Select
+        </Button>
+        <Button size="md" disabled={!file || isLoading} onClick={handleUpload}>
+          {isLoading ? "Uploading..." : "Upload"}
+        </Button>
+      </div>
     </div>
   );
 

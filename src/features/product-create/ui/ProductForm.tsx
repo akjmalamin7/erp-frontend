@@ -12,7 +12,9 @@ import {
 } from "@/features/product-create/model/schema";
 import { BrandSelect } from "@/features/select-brand";
 import CategorySelect from "@/features/select-category/ui/SelectCategory";
+import { UnitSelect } from "@/features/unit-selector";
 import { Modal } from "@/shared/ui";
+import Button from "@/shared/ui/button/Button";
 import { ControllInput } from "@/shared/ui/controll-input";
 import { ControllRadio } from "@/shared/ui/controll-radio";
 import { ControllSelect } from "@/shared/ui/controll-select";
@@ -36,6 +38,7 @@ const emptyValues: ProductFormValues = {
   sku: "",
   code: "",
   price: 0,
+  unit: "",
   discount_price: 0,
   cost: 0,
   quantity: 0,
@@ -119,17 +122,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   const ModalFooter = (
     <div className="w-full flex justify-end gap-2">
-      <button type="button" className="btn-outline" onClick={onCancel}>
+      <Button type="button" variant="outline" onClick={onCancel}>
         Cancel
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
-        disabled={creating || updating}
-        className="btn-accent"
+        disabled={creating || updating || !isDirty}
         onClick={handleSubmit(onSubmit)}
+        variant="accent"
       >
         {editing ? "Save changes" : "Create product"}
-      </button>
+      </Button>
     </div>
   );
 
@@ -139,73 +142,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
       title={editing ? "Edit product" : "New product"}
       onClose={onCancel}
       footer={ModalFooter}
+      size="xl"
     >
       <FormProvider {...form}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <ControllInput label="Product Name" control={control} name="name" />
-            <ControllSelect
-              control={control}
-              label="Product Code"
-              name="code"
-              options={codeOptions}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <ControllInput
-              type="number"
-              name="cost"
-              label="Cost"
-              control={control}
-            />
-            <ControllInput
-              type="number"
-              name="price"
-              label="Selling Price"
-              control={control}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <ControllInput
-              type="number"
-              name="quantity"
-              label="Quantity"
-              control={control}
-            />
-            <ControllInput
-              type="number"
-              name="low_stock_threshold"
-              label="Low Stock Threshold"
-              control={control}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <CategorySelect control={control} name="category" />
-            <BrandSelect control={control} name="brand" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <ControllInput
-              type="number"
-              control={control}
-              name="discount_price"
-              label="Discount Price"
-            />
-            <ControllRadio
-              control={control}
-              name="status"
-              label="Status"
-              options={[
-                { label: "Active", value: "active" },
-                { label: "Inactive", value: "inactive" },
-              ]}
-            />
-          </div>
-
-          <div className="space-y-1">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div>
             <label className="label">Product Image</label>
             <div className="flex items-center gap-4 p-2 border border-dashed border-gray-500 rounded-md">
               <ImageUploader
@@ -234,7 +175,79 @@ const ProductForm: React.FC<ProductFormProps> = ({
               )}
             </div>
           </div>
+          <div className="flex  gap-4">
+            <ControllInput label="Product Name" control={control} name="name" />
+            <ControllSelect
+              control={control}
+              label="Product Code"
+              name="code"
+              options={codeOptions}
+            />
+          </div>
 
+          <div className="flex  gap-4">
+            <ControllInput
+              type="number"
+              name="cost"
+              label="Cost"
+              control={control}
+            />
+            <ControllInput
+              type="number"
+              name="price"
+              label="Selling Price"
+              control={control}
+            />
+          </div>
+
+          <div className="flex  gap-4">
+            <ControllInput
+              type="number"
+              name="quantity"
+              label="Quantity"
+              control={control}
+            />
+            <ControllInput
+              type="number"
+              name="low_stock_threshold"
+              label="Low Stock Threshold"
+              control={control}
+            />
+          </div>
+
+          <div className="flex  gap-4">
+            <CategorySelect control={control} name="category" />
+            <BrandSelect control={control} name="brand" />
+          </div>
+
+          <div className="flex  gap-4">
+            <ControllInput
+              type="number"
+              control={control}
+              name="discount_price"
+              label="Discount Price"
+            />
+            <UnitSelect control={control} name="unit" />
+          </div>
+          <div className="flex  gap-4">
+            <ControllInput
+              type="text"
+              control={control}
+              name="sku"
+              label="SKU"
+            />
+            <div className="w-full">
+              <ControllRadio
+                control={control}
+                name="status"
+                label="Status"
+                options={[
+                  { label: "Active", value: "active" },
+                  { label: "Inactive", value: "inactive" },
+                ]}
+              />
+            </div>
+          </div>
           <div>
             <ControllTextArea
               control={control}

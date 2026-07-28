@@ -14,6 +14,7 @@ export interface ProductFormValues {
   description?: string;
   supplier?: string;
   image?: string;
+  unit?: string;
   status: "active" | "inactive";
 }
 
@@ -35,6 +36,7 @@ export const productSchema = yup
     sku: yup.string().optional(),
     category: yup.string().optional(),
     brand: yup.string().optional(),
+    unit: yup.string().optional(),
     image: yup.string().optional(),
   })
   .required();
