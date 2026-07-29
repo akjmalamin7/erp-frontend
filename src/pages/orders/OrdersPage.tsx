@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Ban, Wallet2, Eye } from "lucide-react";
-import toast from "react-hot-toast";
-import { useGetAllOrdersQuery, useCancelOrderMutation } from "@/entities/order";
-import type { Order } from "@/entities/order";
 import type { Customer } from "@/entities/customer";
-import { PageHeader, Loader, EmptyState, ErrorState, Modal } from "@/shared/ui";
+import type { Order } from "@/entities/order";
+import { useCancelOrderMutation, useGetAllOrdersQuery } from "@/entities/order";
 import ReceivePaymentForm from "@/features/order-receive-payment/ui/ReceivePaymentForm";
+import { EmptyState, ErrorState, Loader, Modal, PageHeader } from "@/shared/ui";
+import { Ban, Eye, Wallet2 } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 const statusBadge: Record<Order["status"], string> = {
   pending: "bg-brass-100 text-brass-700",
@@ -37,14 +37,20 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <PageHeader title="Orders" description="All sales orders, their payment and fulfilment status." />
+      <PageHeader
+        title="Orders"
+        description="All sales orders, their payment and fulfilment status."
+      />
 
       {isLoading ? (
         <Loader />
       ) : isError ? (
         <ErrorState />
       ) : orders.length === 0 ? (
-        <EmptyState title="No orders yet" description="Orders created from your POS or storefront will show up here." />
+        <EmptyState
+          title="No orders yet"
+          description="Orders created from your POS or storefront will show up here."
+        />
       ) : (
         <div className="card overflow-x-auto">
           <table className="table-shell">
@@ -67,33 +73,53 @@ export default function OrdersPage() {
                     : "Walk-in";
                 return (
                   <tr key={o._id}>
-                    <td className="font-mono text-xs text-slate-500">{o.order_number ?? o._id.slice(-8)}</td>
+                    <td className="font-mono text-xs text-slate-500">
+                      {o.order_number ?? o._id.slice(-8)}
+                    </td>
                     <td className="font-medium text-ink-900">{customerName}</td>
-                    <td className="font-mono">৳ {o.total_amount?.toLocaleString()}</td>
-                    <td className="font-mono">৳ {o.paid_amount?.toLocaleString()}</td>
-                    <td><span className={`badge ${statusBadge[o.status]}`}>{o.status}</span></td>
-                    <td><span className={`badge ${paymentBadge[o.payment_status]}`}>{o.payment_status}</span></td>
+                    <td className="font-mono">
+                      ৳ {o.total_amount?.toLocaleString()}
+                    </td>
+                    <td className="font-mono">
+                      ৳ {o.paid_amount?.toLocaleString()}
+                    </td>
+                    <td>
+                      <span className={`badge ${statusBadge[o.status]}`}>
+                        {o.status}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={`badge ${paymentBadge[o.payment_status]}`}
+                      >
+                        {o.payment_status}
+                      </span>
+                    </td>
                     <td>
                       <div className="flex justify-end gap-1">
-                        {o.payment_status !== "paid" && o.status !== "canceled" && (
-                          <button
-                            className="btn-ghost !px-2 !py-1.5"
-                            title="Receive payment"
-                            onClick={() => setPayFor(o)}
-                          >
-                            <Wallet2 size={14} />
-                          </button>
-                        )}
+                        {o.payment_status !== "paid" &&
+                          o.status !== "canceled" && (
+                            <button
+                              className="btn-ghost px-2! py-1.5!"
+                              title="Receive payment"
+                              onClick={() => setPayFor(o)}
+                            >
+                              <Wallet2 size={14} />
+                            </button>
+                          )}
                         {o.status === "pending" && (
                           <button
-                            className="btn-ghost !px-2 !py-1.5 text-red-600"
+                            className="btn-ghost px-2! py-1.5! text-red-600"
                             title="Cancel order"
                             onClick={() => handleCancel(o._id)}
                           >
                             <Ban size={14} />
                           </button>
                         )}
-                        <button className="btn-ghost !px-2 !py-1.5" title="View invoice">
+                        <button
+                          className="btn-ghost px-2! py-1.5!"
+                          title="View invoice"
+                        >
                           <Eye size={14} />
                         </button>
                       </div>
@@ -106,7 +132,11 @@ export default function OrdersPage() {
         </div>
       )}
 
-      <Modal open={!!payFor} onClose={() => setPayFor(null)} title="Receive payment">
+      <Modal
+        open={!!payFor}
+        onClose={() => setPayFor(null)}
+        title="Receive payment"
+      >
         {payFor && (
           <ReceivePaymentForm
             order={payFor}

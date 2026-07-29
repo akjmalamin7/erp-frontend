@@ -1,0 +1,10 @@
+export { brandsRoutes } from "./brands.routes";
+export { categoryRoutes } from "./category.routes";
+export { customerRoutes } from "./customer.routes";
+export { dashboardRoutes } from "./dashboard.routes";
+export { invoiceRoutes } from "./invoice.routes";
+export { profileRoutes } from "./profile.routes";
+export { salesRoutes } from "./sales.routes";
+export { salesReportRoutes } from "./salesReport.routes";
+export { staffRoutes } from "./staff.routes";
+export { stockRoutes } from "./stock.routes";

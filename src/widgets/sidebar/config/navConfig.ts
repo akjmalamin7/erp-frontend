@@ -7,7 +7,6 @@ import {
   MessageSquareText,
   Receipt,
   ShoppingCart,
-  Tags,
   Truck,
   UserCog,
   UserRound,
@@ -48,7 +47,7 @@ export const navItems: NavItem[] = [
       },
       {
         label: "Brand",
-        path: "/products/brand",
+        path: "/products/brands",
         icon: UserCog,
         menu: "stock",
       },
@@ -58,23 +57,39 @@ export const navItems: NavItem[] = [
         icon: UserCog,
         menu: "stock",
       },
+      {
+        label: "Suppliers",
+        path: "/products/suppliers",
+        icon: Truck,
+        menu: "stock",
+        roles: ["super_admin", "admin"],
+      },
+      {
+        label: "Codes",
+        path: "/products/codes",
+        icon: Truck,
+        menu: "stock",
+        roles: ["super_admin", "admin"],
+      },
     ],
   },
-  {
-    label: "Categories & Brands",
-    path: "/categories",
-    icon: Tags,
-    menu: "category",
-  },
+
   { label: "Customers", path: "/customers", icon: Users, menu: "customers" },
+
   {
-    label: "Suppliers",
-    path: "/suppliers",
-    icon: Truck,
-    menu: "stock",
-    roles: ["super_admin", "admin"],
+    label: "Orders",
+    path: "/orders",
+    icon: ShoppingCart,
+    menu: "sale",
+    children: [
+      {
+        label: "Carts ",
+        path: "/orders/carts",
+        icon: UserCog,
+        menu: "sale",
+      },
+    ],
   },
-  { label: "Orders / POS", path: "/orders", icon: ShoppingCart, menu: "sale" },
   {
     label: "Low Stock",
     path: "/low-stock",
@@ -94,6 +109,32 @@ export const navItems: NavItem[] = [
     icon: Wallet,
     menu: "sales_report",
     roles: ["super_admin", "admin"],
+    children: [
+      {
+        label: "Expense ",
+        path: "/accounts/expense",
+        icon: UserCog,
+        menu: "sales_report",
+      },
+      {
+        label: "Investment ",
+        path: "/accounts/investment",
+        icon: UserCog,
+        menu: "sales_report",
+      },
+      {
+        label: "Loan ",
+        path: "/accounts/loan",
+        icon: UserCog,
+        menu: "sales_report",
+      },
+      {
+        label: "Salary ",
+        path: "/accounts/salary",
+        icon: UserCog,
+        menu: "sales_report",
+      },
+    ],
   },
   {
     label: "Staff",
@@ -115,6 +156,18 @@ export const navItems: NavItem[] = [
     icon: UserRound,
     menu: "profile",
     children: [
+      {
+        label: "Create User",
+        path: "/profile/create-user",
+        icon: UserCog,
+        menu: "profile",
+      },
+      {
+        label: "All Users",
+        path: "/profile/all-users",
+        icon: UserCog,
+        menu: "profile",
+      },
       {
         label: "Update Password",
         path: "/profile/update-password",

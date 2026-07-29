@@ -6,23 +6,21 @@ import RequireRole from "@/app/routes/RequireRole";
 import AuthLayout from "@/widgets/auth-layout/ui/AuthLayout";
 import DashboardLayout from "@/widgets/dashboard-layout/ui/DashboardLayout";
 
-import AccountsPage from "@/pages/accounts/AccountsPage";
-import ReportsPage from "@/pages/accounts/ReportsPage";
 import Login from "@/pages/auth/Login";
-import CategoriesBrandsPage from "@/pages/categories/CategoriesBrandsPage";
-import CustomersPage from "@/pages/customers/CustomersPage";
-import Dashboard from "@/pages/dashboard/Dashboard";
-import LowStockPage from "@/pages/lowstock/LowStockPage";
 import Forbidden from "@/pages/misc/Forbidden";
 import NotFound from "@/pages/misc/NotFound";
-import InvoicesPage from "@/pages/orders/InvoicesPage";
-import OrdersPage from "@/pages/orders/OrdersPage";
-import ProductsList from "@/pages/products/ProductsList";
-import ProfilePage from "@/pages/profile";
-import SmsSettingsPage from "@/pages/sms/SmsSettingsPage";
-import StaffPage from "@/pages/staff/StaffPage";
-import SuppliersPage from "@/pages/suppliers/SuppliersPage";
-import UpdatePassword from "@/pages/update-password";
+
+import {
+  brandsRoutes,
+  categoryRoutes,
+  customerRoutes,
+  dashboardRoutes,
+  invoiceRoutes,
+  profileRoutes,
+  salesReportRoutes,
+  salesRoutes,
+  stockRoutes,
+} from "./routes";
 
 export const router = createBrowserRouter([
   {
@@ -41,133 +39,44 @@ export const router = createBrowserRouter([
         children: [
           {
             element: <RequireMenu menu="dashboard" />,
-            children: [
-              {
-                index: true,
-                element: <Dashboard />,
-                handle: { title: "Dashboard" },
-              },
-            ],
+            children: dashboardRoutes,
           },
           {
             element: <RequireMenu menu="stock" />,
-            children: [
-              {
-                path: "products",
-                element: <ProductsList />,
-                handle: { title: "Products" },
-              },
-              {
-                path: "low-stock",
-                element: <LowStockPage />,
-                handle: { title: "Low stock" },
-              },
-              {
-                element: <RequireRole roles={["super_admin", "admin"]} />,
-                children: [
-                  {
-                    path: "suppliers",
-                    element: <SuppliersPage />,
-                    handle: { title: "Suppliers" },
-                  },
-                ],
-              },
-            ],
+            children: stockRoutes,
           },
           {
             element: <RequireMenu menu="category" />,
-            children: [
-              {
-                path: "/products/category",
-                element: <CategoriesBrandsPage />,
-                handle: { title: "Categories & Brands" },
-              },
-            ],
+            children: categoryRoutes,
+          },
+          {
+            element: <RequireMenu menu="brands" />,
+            children: brandsRoutes,
           },
           {
             element: <RequireMenu menu="customers" />,
-            children: [
-              {
-                path: "customers",
-                element: <CustomersPage />,
-                handle: { title: "Customers" },
-              },
-            ],
+            children: customerRoutes,
           },
           {
             element: <RequireMenu menu="sale" />,
-            children: [
-              {
-                path: "orders",
-                element: <OrdersPage />,
-                handle: { title: "Orders" },
-              },
-            ],
+            children: salesRoutes,
           },
           {
             element: <RequireMenu menu="invoice" />,
-            children: [
-              {
-                path: "invoices",
-                element: <InvoicesPage />,
-                handle: { title: "Invoices" },
-              },
-            ],
+
+            children: invoiceRoutes,
           },
           {
             element: <RequireMenu menu="sales_report" />,
-            children: [
-              {
-                path: "reports",
-                element: <ReportsPage />,
-                handle: { title: "Sales report" },
-              },
-              {
-                element: <RequireRole roles={["super_admin", "admin"]} />,
-                children: [
-                  {
-                    path: "accounts",
-                    element: <AccountsPage />,
-                    handle: { title: "Accounts" },
-                  },
-                ],
-              },
-            ],
+            children: salesReportRoutes,
           },
           {
             element: <RequireRole roles={["super_admin", "admin"]} />,
-            children: [
-              {
-                path: "staff",
-                element: <StaffPage />,
-                handle: { title: "Staff" },
-              },
-              {
-                path: "sms",
-                element: <SmsSettingsPage />,
-                handle: { title: "SMS settings" },
-              },
-            ],
+            children: stockRoutes,
           },
           {
             element: <RequireMenu menu="profile" />,
-            children: [
-              {
-                path: "profile",
-                element: <ProfilePage />,
-                handle: { title: "My profile" },
-              },
-            ],
-          },
-          {
-            element: <RequireMenu menu="profile" />,
-            children: [
-              {
-                path: "profile/update-password",
-                element: <UpdatePassword />,
-                handle: { title: "Update Password" },
-              },
-            ],
+            children: profileRoutes,
           },
           { path: "*", element: <NotFound /> },
         ],

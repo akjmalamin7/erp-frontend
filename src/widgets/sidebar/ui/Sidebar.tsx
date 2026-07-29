@@ -16,25 +16,24 @@ export default function Sidebar() {
 
   if (!user) return null;
 
-  // বর্তমান পেজ অনুযায়ী প্যারেন্ট মেনু অটো ওপেন রাখা
   useEffect(() => {
     navItems.forEach((item) => {
       if (item.children?.some((child) => location.pathname === child.path)) {
-        if (!openMenus.includes(item.label)) {
-          setOpenMenus((prev) => [...prev, item.label]);
-        }
+        setOpenMenus([item.label]);
+        // if (!openMenus.includes(item.label)) {
+        //   setOpenMenus((prev) => [...prev, item.label]);
+        // }
       }
     });
   }, [location.pathname]);
 
-  // মেইন ক্লিক হ্যান্ডলার (রুট চেঞ্জ + টগল)
   const handleItemClick = (label: string, hasChildren: boolean) => {
     if (hasChildren && !collapsed) {
-      setOpenMenus((prev) =>
-        prev.includes(label)
-          ? prev.filter((i) => i !== label)
-          : [...prev, label],
-      );
+      setOpenMenus((prev) => {
+        return prev.includes(label) ? [] : [label];
+      });
+    } else if (!hasChildren) {
+      setOpenMenus([]);
     }
     dispatch(mobileSidebarClosed());
   };

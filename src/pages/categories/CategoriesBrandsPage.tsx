@@ -72,7 +72,7 @@ export default function CategoriesBrandsPage() {
   return (
     <div>
       <PageHeader
-        title="Categories & Brands"
+        title="Categories"
         description="Keep your catalogue organized and easy to filter."
       />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
