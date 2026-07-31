@@ -10,6 +10,11 @@ export interface IUser {
 export interface IProfile {
   _id: string;
   designation: string;
+  name: string;
+  nid: number;
+  address: string;
+  blood_group: string;
+  phone: string;
   bio: string;
   photo: string;
   dob: string;

@@ -1,5 +1,3 @@
-export { brandsRoutes } from "./brands.routes";
-export { categoryRoutes } from "./category.routes";
 export { customerRoutes } from "./customer.routes";
 export { dashboardRoutes } from "./dashboard.routes";
 export { invoiceRoutes } from "./invoice.routes";

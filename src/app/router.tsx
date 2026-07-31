@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import RequireAuth from "@/app/routes/RequireAuth";
 import RequireMenu from "@/app/routes/RequireMenu";
-import RequireRole from "@/app/routes/RequireRole";
 import AuthLayout from "@/widgets/auth-layout/ui/AuthLayout";
 import DashboardLayout from "@/widgets/dashboard-layout/ui/DashboardLayout";
 
@@ -11,8 +10,6 @@ import Forbidden from "@/pages/misc/Forbidden";
 import NotFound from "@/pages/misc/NotFound";
 
 import {
-  brandsRoutes,
-  categoryRoutes,
   customerRoutes,
   dashboardRoutes,
   invoiceRoutes,
@@ -45,14 +42,7 @@ export const router = createBrowserRouter([
             element: <RequireMenu menu="stock" />,
             children: stockRoutes,
           },
-          {
-            element: <RequireMenu menu="category" />,
-            children: categoryRoutes,
-          },
-          {
-            element: <RequireMenu menu="brands" />,
-            children: brandsRoutes,
-          },
+
           {
             element: <RequireMenu menu="customers" />,
             children: customerRoutes,
@@ -69,10 +59,6 @@ export const router = createBrowserRouter([
           {
             element: <RequireMenu menu="sales_report" />,
             children: salesReportRoutes,
-          },
-          {
-            element: <RequireRole roles={["super_admin", "admin"]} />,
-            children: stockRoutes,
           },
           {
             element: <RequireMenu menu="profile" />,

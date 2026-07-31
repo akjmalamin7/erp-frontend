@@ -1,6 +1,7 @@
+import Button from "@/shared/ui/button/Button";
 import { Edit2, Loader2, Save, X } from "lucide-react";
 
-interface Porps {
+interface Props {
   isEditing?: boolean;
   isUpdating?: boolean;
   setIsEditing?: (value: boolean) => void;
@@ -11,29 +12,28 @@ const ProfileControls = ({
   isUpdating,
   setIsEditing,
   submit,
-}: Porps) => {
+}: Props) => {
   return (
     <div>
       {/* Controls */}
       {!isEditing ? (
-        <button
-          onClick={() => setIsEditing?.(true)}
-          className="btn-accent flex items-center gap-2 h-11 px-6"
-        >
+        <Button onClick={() => setIsEditing?.(true)} variant="accent" size="lg">
           <Edit2 size={18} /> Edit Profile
-        </button>
+        </Button>
       ) : (
         <div className="flex gap-3">
-          <button
+          <Button
             onClick={() => setIsEditing?.(false)}
-            className="btn-outline flex items-center gap-2 h-11 px-6"
+            size="lg"
+            variant="outline"
           >
             <X size={18} /> Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={submit}
             disabled={isUpdating}
-            className="btn-accent flex items-center gap-2 h-11 px-6"
+            variant="accent"
+            size="lg"
           >
             {isUpdating ? (
               <Loader2 className="animate-spin" size={18} />
@@ -41,7 +41,7 @@ const ProfileControls = ({
               <Save size={18} />
             )}
             Save Profile
-          </button>
+          </Button>
         </div>
       )}
     </div>

@@ -38,12 +38,46 @@ export default function Sidebar() {
     dispatch(mobileSidebarClosed());
   };
 
-  const visibleItems = navItems.filter((item) => {
-    if (item.roles && !item.roles.includes(user.role)) return false;
-    if (user.role !== "employee") return true;
-    return user.allowedMenus?.includes(item.menu);
-  });
+  const visibleItems = navItems
+    .filter((item) => {
+      // ১. যদি মেনুতে নির্দিষ্ট roles ডিফাইন করা থাকে, তবে আগে সেটি চেক করো
+      if (item.roles) {
+        if (!item.roles.includes(user.role)) return false;
+      } else {
+        // ২. যদি roles ডিফাইন করা না থাকে (সবার জন্য উন্মুক্ত মেনু):
+        // অ্যাডমিন বা সুপার অ্যাডমিন হলে সরাসরি ট্রু
+        if (user.role === "super_admin" || user.role === "admin") {
+          return true;
+        }
+        // এমপ্লয়ি হলে তার allowedMenus চেক করো
+        if (
+          user.role === "employee" &&
+          !user.allowedMenus?.includes(item.menu)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    })
+    .map((item) => {
+      // চাইল্ড মেনু ফিল্টারিং
+      if (item.children) {
+        const filteredChildren = item.children.filter((child) => {
+          // চাইল্ডে রোল থাকলে সেটি চেক করো
+          if (child.roles) {
+            return child.roles.includes(user.role);
+          }
+          // রোল না থাকলে অ্যাডমিনরা সব দেখবে, এমপ্লয়িরা পারমিশন অনুযায়ী দেখবে
+          if (user.role === "super_admin" || user.role === "admin") {
+            return true;
+          }
+          return user.allowedMenus?.includes(child.menu);
+        });
 
+        return { ...item, children: filteredChildren };
+      }
+      return item;
+    });
   return (
     <>
       {mobileOpen && (

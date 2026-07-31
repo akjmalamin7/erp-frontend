@@ -20,7 +20,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           name={name}
           ref={ref}
           placeholder={placeholder}
-          className="input h-24 w-full p-2 bg-transparent border border-gray-500 rounded-md outline-none focus:border-blue-500"
+          className="input h-24 w-full p-2 bg-transparent rounded-md outline-none focus:border-blue-500"
           {...props}
         />
         {error?.status && (

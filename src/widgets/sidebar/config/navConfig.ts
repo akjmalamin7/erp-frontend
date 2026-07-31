@@ -155,12 +155,14 @@ export const navItems: NavItem[] = [
     path: "/profile",
     icon: UserRound,
     menu: "profile",
+    roles: ["super_admin", "admin", "employee"],
     children: [
       {
         label: "Create User",
         path: "/profile/create-user",
         icon: UserCog,
         menu: "profile",
+        roles: ["super_admin", "admin"],
       },
       {
         label: "All Users",
@@ -179,6 +181,7 @@ export const navItems: NavItem[] = [
         path: "/profile/reset-password",
         icon: UserCog,
         menu: "profile",
+        roles: ["super_admin", "admin"],
       },
     ],
   },
