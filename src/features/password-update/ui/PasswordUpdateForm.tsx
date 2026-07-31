@@ -1,8 +1,5 @@
 import { useUpdatePasswordMutation } from "@/features/password-update/api/passwordUpdateApi";
-import {
-  passwordUpdateSchema,
-  type PasswordUpdateFormValues,
-} from "@/features/password-update/model/schema";
+import { passwordUpdateSchema } from "@/features/password-update/model/schema";
 import Button from "@/shared/ui/button/Button";
 import ControllPassword from "@/shared/ui/password/ui/ControllPassword";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,7 +9,8 @@ import toast from "react-hot-toast";
 export default function PasswordUpdateForm() {
   const [updatePassword, { isLoading: changing }] = useUpdatePasswordMutation();
 
-  const form = useForm<PasswordUpdateFormValues>({
+  const form = useForm({
+    mode: "onChange",
     resolver: yupResolver(passwordUpdateSchema),
     defaultValues: { old_password: "", new_password: "" },
   });
@@ -20,9 +18,9 @@ export default function PasswordUpdateForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isDirty },
+    formState: { isDirty, isValid },
   } = form;
-  const onSubmit = async (values: PasswordUpdateFormValues) => {
+  const onSubmit = handleSubmit(async (values) => {
     try {
       await updatePassword(values).unwrap();
       toast.success("Password updated");
@@ -30,7 +28,7 @@ export default function PasswordUpdateForm() {
     } catch {
       toast.error("Couldn't update password");
     }
-  };
+  });
 
   return (
     <div className="card space-y-4 p-5">
@@ -51,8 +49,8 @@ export default function PasswordUpdateForm() {
         </div>
       </FormProvider>
       <Button
-        onClick={handleSubmit(onSubmit)}
-        disabled={changing || !isDirty}
+        onClick={onSubmit}
+        disabled={changing || !isDirty || !isValid}
         variant="accent"
         className="w-full"
       >

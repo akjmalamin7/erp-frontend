@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   label?: string | ReactNode;
-  name: string;
+  name?: string;
   type?:
     | "text"
     | "email"

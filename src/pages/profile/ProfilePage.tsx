@@ -7,7 +7,10 @@ import toast from "react-hot-toast";
 import { ProfileControls, UserMeta } from "@/entities/profile";
 import { profileSchema } from "@/entities/profile/model/schema";
 import { useGetProfileQuery, useUpdateProfileMutation } from "@/entities/user";
-import { PersonalInformationForm } from "@/features/profile-edit";
+import {
+  PermissionsForm,
+  PersonalInformationForm,
+} from "@/features/profile-edit";
 import { ProfilePicture } from "@/features/profile-picture";
 import { PageHeader } from "@/shared/ui";
 import { Container } from "@/shared/ui/container";
@@ -124,15 +127,13 @@ const ProfilePage = () => {
                   isEditing={isEditing}
                   profileData={profileData}
                 />
-
-                {/* Right Column: Permissions */}
-                {/* <PermissionsForm
-                  isEditing={isEditing}
-                  profileData={profileData}
-                /> */}
               </div>
             </form>
           </FormProvider>
+          {/* Right Column: Permissions */}
+          <div className="max-w-100 mt-4">
+            <PermissionsForm isEditing={isEditing} profileData={profileData} />
+          </div>
         </div>
       </div>
     </Container>

@@ -30,7 +30,6 @@ const Badge: React.FC<BadgeProps> = ({
   variant = "info",
   className = "",
 }) => {
-  // স্ট্যাটাস অনুযায়ী কালার কনফিগারেশন
   const variantClasses: Record<BadgeVariant, string> = {
     // Greenish (Positive)
     success: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",

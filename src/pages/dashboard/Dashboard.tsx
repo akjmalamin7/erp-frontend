@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { useAppSelector } from "@/app/hooks";
+import { useMustChangePassword } from "@/shared/hooks/useMustChangePassword";
 import RevenueAreaChart from "@/widgets/revenue-chart/ui/RevenueAreaChart";
 import SalesPieChart from "@/widgets/sales-pie-chart/ui/SalesPieChart";
 
@@ -17,9 +18,11 @@ const currency = (n: number) => `৳ ${n.toLocaleString()}`;
 
 export default function Dashboard() {
   const user = useAppSelector((s) => s.auth.user);
+
   const greetingName = user?.email?.split("@")[0] ?? "there";
   const { data, isLoading, isError } = useGetDashboardQuery();
   const { data: lowStockData } = useGetLowStockQuery();
+  useMustChangePassword();
 
   if (isLoading) return <Loader label="Loading dashboard…" />;
   if (isError || !data) return <ErrorState />;

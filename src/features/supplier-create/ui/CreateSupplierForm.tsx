@@ -1,65 +1,108 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import toast from "react-hot-toast";
+import { useAppSelector } from "@/app/hooks";
 import { useCreateSupplierMutation } from "@/entities/supplier";
-import type { Supplier } from "@/entities/supplier";
-import {
-  createSupplierSchema,
-  type CreateSupplierFormValues,
-} from "@/features/supplier-create/model/schema";
+import { Modal } from "@/shared/ui";
+import Button from "@/shared/ui/button/Button";
+import { ControllInput } from "@/shared/ui/controll-input";
+import { ControllTextArea } from "@/shared/ui/textarea";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { createSupplierSchema } from "../model/schema";
 
-interface CreateSupplierFormProps {
-  onCreated: (supplier: Supplier) => void;
-  onCancel: () => void;
-}
+const CreateSupplierForm = () => {
+  const user = useAppSelector((s: any) => s.auth?.user);
+  const [open, setOpen] = useState(false);
 
-export default function CreateSupplierForm({ onCreated, onCancel }: CreateSupplierFormProps) {
   const [createSupplier, { isLoading: creating }] = useCreateSupplierMutation();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateSupplierFormValues>({
+  const form = useForm({
+    mode: "onChange",
     resolver: yupResolver(createSupplierSchema),
-    defaultValues: { name: "", phone: "", email: "", address: "" },
+    defaultValues: {
+      name: "",
+      company_name: "",
+      phone: "",
+      email: "",
+      address: "",
+    },
   });
 
-  const onSubmit = async (values: CreateSupplierFormValues) => {
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isDirty, isValid },
+  } = form;
+
+  const handleModal = () => setOpen((prev) => !prev);
+
+  const onSubmit = handleSubmit(async (values) => {
     try {
-      const res = await createSupplier(values).unwrap();
-      toast.success("Supplier added");
-      onCreated(res.data);
-    } catch {
-      toast.error("Couldn't add supplier");
+      const payload = {
+        ...values,
+        user: user._id,
+      };
+      await createSupplier(payload).unwrap();
+      toast.success("Supplier created");
+      handleModal();
+      reset();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Something went wrong");
     }
-  };
+  });
+
+  const ButtonJSX = (
+    <div className="flex justify-end gap-3 w-full">
+      <Button variant="outline" onClick={handleModal}>
+        Cancel
+      </Button>
+      <Button
+        variant="accent"
+        onClick={onSubmit}
+        disabled={creating || !isDirty || !isValid}
+      >
+        {creating ? "Creating..." : "Create"}
+      </Button>
+    </div>
+  );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div>
-        <label className="label">Company / contact name</label>
-        <input className="input" {...register("name")} />
-        {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
+    <>
+      <div className="cursor-pointer">
+        <Button variant="accent" onClick={handleModal}>
+          <Plus size={16} /> New Supplier
+        </Button>
       </div>
-      <div>
-        <label className="label">Phone</label>
-        <input className="input" {...register("phone")} />
-        {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone.message}</p>}
-      </div>
-      <div>
-        <label className="label">Email (optional)</label>
-        <input type="email" className="input" {...register("email")} />
-        {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
-      </div>
-      <div>
-        <label className="label">Address (optional)</label>
-        <textarea className="input" rows={2} {...register("address")} />
-      </div>
-      <div className="flex justify-end gap-2 pt-2">
-        <button type="button" className="btn-outline" onClick={onCancel}>Cancel</button>
-        <button type="submit" disabled={creating} className="btn-accent">Save supplier</button>
-      </div>
-    </form>
+
+      {open && (
+        <Modal
+          open={open}
+          title={"Create Supplier"}
+          footer={ButtonJSX}
+          onClose={handleModal}
+        >
+          <FormProvider {...form}>
+            <div className="flex flex-col gap-4">
+              <ControllInput name="name" label="Name" control={control} />
+              <ControllInput
+                name="company_name"
+                label="Company Name"
+                control={control}
+              />
+              <ControllInput name="phone" label="Phone" control={control} />
+              <ControllInput name="email" label="Email" control={control} />
+              <ControllTextArea
+                name="address"
+                label="Address"
+                control={control}
+              />
+            </div>
+          </FormProvider>
+        </Modal>
+      )}
+    </>
   );
-}
+};
+export default CreateSupplierForm;

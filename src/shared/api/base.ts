@@ -49,6 +49,7 @@ export const api = createApi({
     "Salary",
     "Sms",
     "File",
+    "User",
   ],
   endpoints: () => ({}),
 });

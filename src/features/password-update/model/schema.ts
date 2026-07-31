@@ -1,10 +1,5 @@
 import * as yup from "yup";
 
-export interface PasswordUpdateFormValues {
-  old_password: string;
-  new_password: string;
-}
-
 export const passwordUpdateSchema = yup.object({
   old_password: yup.string().required("Current password is required"),
   new_password: yup

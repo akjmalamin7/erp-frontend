@@ -25,14 +25,14 @@ const Password = React.forwardRef<HTMLInputElement, PasswordProps>(
             name={name}
             type={showPassword ? "text" : "password"}
             placeholder={placeholder}
-            className={`input pr-10 ${className}`} // ডানপাশে আইকনের জন্য জায়গা রাখা হয়েছে
+            className={`input pr-10 ${className}`}
           />
 
           <button
             type="button"
             onClick={togglePassword}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
-            tabIndex={-1} // ট্যাব দিয়ে আইকনে ফোকাস হওয়া বন্ধ করবে
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-gray-700 transition-colors lg:cursor-pointer"
+            tabIndex={-1}
           >
             {showPassword ? (
               <EyeOff size={18} strokeWidth={2} />

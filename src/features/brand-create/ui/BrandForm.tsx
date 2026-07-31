@@ -1,55 +1,98 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import toast from "react-hot-toast";
+import { useAppSelector } from "@/app/hooks";
 import { useCreateBrandMutation } from "@/entities/brand";
-import { nameDescriptionSchema, type NameDescriptionFormValues } from "@/shared/lib/validation";
+import { Modal } from "@/shared/ui";
+import Button from "@/shared/ui/button/Button";
+import { ControllInput } from "@/shared/ui/controll-input";
+import { ControllTextArea } from "@/shared/ui/textarea";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { brandSchema } from "../model/schema";
 
-interface BrandFormProps {
-  onDone: () => void;
-  onCancel: () => void;
-}
+const BrandForm = () => {
+  const user = useAppSelector((s: any) => s.auth?.user);
+  const [open, setOpen] = useState(false);
 
-export default function BrandForm({ onDone, onCancel }: BrandFormProps) {
   const [createBrand, { isLoading: creating }] = useCreateBrandMutation();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<NameDescriptionFormValues>({
-    resolver: yupResolver(nameDescriptionSchema),
+  const form = useForm({
+    mode: "onChange",
+    resolver: yupResolver(brandSchema),
     defaultValues: { name: "", description: "" },
   });
 
-  const onSubmit = async (values: NameDescriptionFormValues) => {
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isDirty, isValid },
+  } = form;
+
+  const handleModal = () => setOpen((prev) => !prev);
+
+  const onSubmit = handleSubmit(async (values) => {
     try {
-      await createBrand({ name: values.name, description: values.description || undefined }).unwrap();
+      const payload = {
+        ...values,
+        user: user._id,
+      };
+      await createBrand(payload).unwrap();
       toast.success("Brand added");
-      onDone();
-    } catch {
-      toast.error("Couldn't add brand");
+      handleModal();
+      reset({
+        name: "",
+        description: "",
+      });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Something went wrong");
     }
-  };
+  });
+
+  const ButtonJSX = (
+    <div className="flex justify-end gap-3 w-full">
+      <Button variant="outline" onClick={handleModal}>
+        Cancel
+      </Button>
+      <Button
+        variant="accent"
+        onClick={onSubmit}
+        disabled={creating || !isDirty || !isValid}
+      >
+        {creating ? "Creating..." : "Create"}
+      </Button>
+    </div>
+  );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div>
-        <label className="label">Name</label>
-        <input className="input" {...register("name")} />
-        {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
+    <>
+      <div className="cursor-pointer">
+        <Button variant="accent" onClick={handleModal}>
+          <Plus size={16} /> New brand
+        </Button>
       </div>
-      <div>
-        <label className="label">Description (optional)</label>
-        <textarea className="input" rows={3} {...register("description")} />
-      </div>
-      <div className="flex justify-end gap-2 pt-2">
-        <button type="button" className="btn-outline" onClick={onCancel}>
-          Cancel
-        </button>
-        <button type="submit" disabled={creating} className="btn-accent">
-          Save
-        </button>
-      </div>
-    </form>
+
+      {open && (
+        <Modal
+          open={open}
+          title={"Create Customer"}
+          footer={ButtonJSX}
+          onClose={handleModal}
+        >
+          <FormProvider {...form}>
+            <div className="flex flex-col gap-4">
+              <ControllInput name="name" label="Name" control={control} />
+              <ControllTextArea
+                name="description"
+                label="Desciption"
+                control={control}
+              />
+            </div>
+          </FormProvider>
+        </Modal>
+      )}
+    </>
   );
-}
+};
+export default BrandForm;

@@ -1,8 +1,8 @@
 import Brands from "@/pages/brands";
-import CategoriesBrandsPage from "@/pages/categories/CategoriesBrandsPage";
+import CategoriesPage from "@/pages/categories";
 import LowStockPage from "@/pages/lowstock/LowStockPage";
 import ProductsList from "@/pages/products/ProductsList";
-import SuppliersPage from "@/pages/suppliers/SuppliersPage";
+import Suppliers from "@/pages/suppliers/Suppliers";
 import RequireRole from "./RequireRole";
 
 export const stockRoutes = [
@@ -23,15 +23,15 @@ export const stockRoutes = [
   },
   {
     path: "/products/category",
-    element: <CategoriesBrandsPage />,
+    element: <CategoriesPage />,
     handle: { title: "Categories & Brands" },
   },
   {
     element: <RequireRole roles={["super_admin", "admin"]} />,
     children: [
       {
-        path: "suppliers",
-        element: <SuppliersPage />,
+        path: "/products/suppliers",
+        element: <Suppliers />,
         handle: { title: "Suppliers" },
       },
     ],

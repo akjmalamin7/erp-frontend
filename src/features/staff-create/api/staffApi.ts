@@ -1,11 +1,10 @@
+import type { User } from "@/entities/session/model/types";
 import { api } from "@/shared/api/base";
 import type { ApiEnvelope } from "@/shared/types";
-import type { User } from "@/entities/session/model/types";
 
 interface CreateUserRequest {
   email: string;
   password: string;
-  employee_id: string;
   role?: "admin" | "employee";
   allowedMenus?: string[];
 }

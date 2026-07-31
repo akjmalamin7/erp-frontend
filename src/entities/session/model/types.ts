@@ -11,7 +11,18 @@ export interface User {
   allowedMenus: MenuKey[];
   createdAt?: string;
 }
-
+export interface CreateUser {
+  email: string;
+  role: Role;
+  password: string;
+  allowedMenus: MenuKey[];
+}
+export interface ResetPasswordRequest {
+  id: string;
+  body: {
+    password: string;
+  };
+}
 export interface AuthState {
   token: string | null;
   user: User | null;

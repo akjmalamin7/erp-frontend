@@ -1,68 +1,134 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import toast from "react-hot-toast";
-import { useCreateCustomerMutation } from "@/entities/customer";
+import { useAppSelector } from "@/app/hooks";
+import {
+  Customer,
+  useCreateCustomerMutation,
+  useUpdateCustomerMutation,
+} from "@/entities/customer";
 import {
   createCustomerSchema,
   type CreateCustomerFormValues,
 } from "@/features/customer-create/model/schema";
+import { Modal } from "@/shared/ui";
+import Button from "@/shared/ui/button/Button";
+import { ControllInput } from "@/shared/ui/controll-input";
+import { ControllTextArea } from "@/shared/ui/textarea";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Plus } from "lucide-react";
+import { ReactNode, useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
-interface CreateCustomerFormProps {
-  onDone: () => void;
-  onCancel: () => void;
+interface Props {
+  mode?: "edit" | "add";
+  initialData?: Customer;
+  trigger?: ReactNode;
 }
 
-export default function CreateCustomerForm({ onDone, onCancel }: CreateCustomerFormProps) {
-  const [createCustomer, { isLoading: creating }] = useCreateCustomerMutation();
+const CreateCustomerForm = ({ mode = "add", initialData, trigger }: Props) => {
+  // annotate state as any to avoid unknown index errors in this selector
+  const user = useAppSelector((s: any) => s.auth?.user);
+  const [open, setOpen] = useState(false);
+  const isEdit = mode === "edit";
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateCustomerFormValues>({
+  const [createCustomer, { isLoading: creating }] = useCreateCustomerMutation();
+  const [updateCustomer, { isLoading: updating }] = useUpdateCustomerMutation();
+
+  const form = useForm<CreateCustomerFormValues>({
+    mode: "onChange",
     resolver: yupResolver(createCustomerSchema),
     defaultValues: { name: "", phone: "", email: "", address: "" },
   });
 
-  const onSubmit = async (values: CreateCustomerFormValues) => {
-    try {
-      await createCustomer(values).unwrap();
-      toast.success("Customer added");
-      onDone();
-    } catch {
-      toast.error("Couldn't add customer");
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isDirty, isValid },
+  } = form;
+
+  useEffect(() => {
+    if (open) {
+      if (isEdit && initialData) {
+        reset({
+          name: initialData.name,
+          phone: initialData.phone,
+          email: initialData.email || "",
+          address: initialData.address || "",
+        });
+      } else {
+        reset({ name: "", phone: "", email: "", address: "" });
+      }
     }
-  };
+  }, [open, isEdit, initialData, reset]);
+
+  const handleModal = () => setOpen((prev) => !prev);
+
+  const onSubmit = handleSubmit(async (values: CreateCustomerFormValues) => {
+    try {
+      if (isEdit && initialData) {
+        await updateCustomer({ id: initialData._id, body: values }).unwrap();
+        toast.success("Customer updated");
+      } else {
+        const payload = { ...values, user: user?._id };
+        await createCustomer(payload).unwrap();
+        toast.success("Customer added");
+      }
+      handleModal();
+    } catch {
+      toast.error(`Couldn't ${isEdit ? "update" : "add"} customer`);
+    }
+  });
+
+  const ButtonJSX = (
+    <div className="flex justify-end gap-3 w-full">
+      <Button variant="outline" onClick={handleModal}>
+        Cancel
+      </Button>
+      <Button
+        variant="accent"
+        onClick={onSubmit}
+        disabled={creating || updating || (isEdit && !isDirty) || !isValid}
+      >
+        {creating || updating ? "Saving..." : isEdit ? "Update" : "Create"}
+      </Button>
+    </div>
+  );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div>
-        <label className="label">Full name</label>
-        <input className="input" {...register("name")} />
-        {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
+    <>
+      <div onClick={handleModal} className="cursor-pointer">
+        {trigger ? (
+          trigger
+        ) : (
+          <Button variant="accent">
+            <Plus size={16} /> New customer
+          </Button>
+        )}
       </div>
-      <div>
-        <label className="label">Phone</label>
-        <input className="input" {...register("phone")} />
-        {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone.message}</p>}
-      </div>
-      <div>
-        <label className="label">Email (optional)</label>
-        <input type="email" className="input" {...register("email")} />
-        {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
-      </div>
-      <div>
-        <label className="label">Address (optional)</label>
-        <textarea className="input" rows={2} {...register("address")} />
-      </div>
-      <div className="flex justify-end gap-2 pt-2">
-        <button type="button" className="btn-outline" onClick={onCancel}>
-          Cancel
-        </button>
-        <button type="submit" disabled={creating} className="btn-accent">
-          Save customer
-        </button>
-      </div>
-    </form>
+
+      {open && (
+        <Modal
+          open={open}
+          title={isEdit ? "Edit Customer" : "Create Customer"}
+          footer={ButtonJSX}
+          onClose={handleModal}
+        >
+          <FormProvider {...form}>
+            <div className="flex flex-col gap-4">
+              <ControllInput name="name" label="Name" control={control} />
+              <ControllInput name="phone" label="Phone" control={control} />
+              <ControllInput name="email" label="Email" control={control} />
+              <ControllTextArea
+                name="address"
+                label="Address"
+                control={control}
+              />
+            </div>
+          </FormProvider>
+        </Modal>
+      )}
+    </>
   );
-}
+};
+
+export default CreateCustomerForm;

@@ -65,6 +65,18 @@ const PersonalInformationForm = ({ isEditing, profileData }: Props) => {
   return (
     <div className="flex flex-col gap-4">
       <section>
+        {!isEditing && (
+          <>
+            <h3 className="text-lg font-semibold">Bio & Summary</h3>
+            <div className="bg-white/5  rounded-xl border border-white/5">
+              <p className="text-slate-400 leading-relaxed">
+                {profileData.bio || "No bio information available."}
+              </p>
+            </div>
+          </>
+        )}
+      </section>
+      <section>
         <h3 className="text-lg font-semibold  mb-4 flex items-center gap-2">
           <BadgeCheck size={20} className="text-brass-500" />
           Personal Information
@@ -116,18 +128,6 @@ const PersonalInformationForm = ({ isEditing, profileData }: Props) => {
             ))
           )}
         </div>
-      </section>
-      <section>
-        {!isEditing && (
-          <>
-            <h3 className="text-lg font-semibold">Bio & Summary</h3>
-            <div className="bg-white/5  rounded-xl border border-white/5">
-              <p className="text-slate-400 leading-relaxed">
-                {profileData.bio || "No bio information available."}
-              </p>
-            </div>
-          </>
-        )}
       </section>
     </div>
   );
